@@ -125,4 +125,34 @@ public class GameService : IGameService
 			return response;
 		}
 	}
+
+	public async Task<IResponse<IGameViewModel>> GetByName(string name)
+	{
+		var response = new Responce<IGameViewModel>();
+
+		try
+		{
+			var game = await _gameRepository.GetByName(name);
+
+			if (game == null)
+			{
+				response.StatusCode = StatusCode.NotFound;
+
+				return response;
+			}
+
+			response.Data = game.ToViewModel();
+			response.StatusCode = StatusCode.OK;
+
+			return response;
+		}
+		catch (Exception e)
+		{
+			response = new Responce<IGameViewModel>();
+			response.StatusCode = StatusCode.InternalServerError;
+			response.Description = e.Message;
+
+			return response;
+		}
+	}
 }

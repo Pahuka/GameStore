@@ -4,6 +4,6 @@ namespace Application.Interfaces;
 
 public interface IGenreRepository : IRepository<Genre>
 {
-	Task<Genre> GetById(Guid id);
-	Task<Genre> GetByName(string name);
+	public Task<Genre> GetById(Guid id);
+	public Task<Genre> GetByName(string name);
 }

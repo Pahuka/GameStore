@@ -43,11 +43,13 @@ public class GenreRepository : IGenreRepository
 
 	public async Task<Genre> GetById(Guid id)
 	{
-		return await _appDbContext.Genres.FindAsync(id);
+		return await _appDbContext.Genres
+			.FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 	public async Task<Genre> GetByName(string name)
 	{
-		return await _appDbContext.Genres.FindAsync(name);
+		return await _appDbContext.Genres
+			.FirstOrDefaultAsync(x => x.Name == name);
 	}
 }

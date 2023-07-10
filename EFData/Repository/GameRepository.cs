@@ -44,11 +44,13 @@ public class GameRepository : IGameRepository
 
 	public async Task<Game> GetById(Guid id)
 	{
-		return await _appDbContext.Games.FindAsync(id);
+		return await _appDbContext.Games
+			.FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 	public async Task<Game> GetByName(string name)
 	{
-		return await _appDbContext.Games.FindAsync(name);
+		return await _appDbContext.Games
+			.FirstOrDefaultAsync(x => x.Name == name);
 	}
 }
