@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using Domain.Entities;
+﻿using Domain.Entities;
 using GameStoreServices.ViewModels;
 
 namespace GameStoreServices.Mappers;
@@ -8,7 +7,7 @@ public static class GenreMapper
 {
 	public static Genre ToEntity(this GenreViewModel genre)
 	{
-		return new Genre()
+		return new Genre
 		{
 			Name = genre.Name,
 			Games = genre.Games
@@ -19,7 +18,7 @@ public static class GenreMapper
 
 	public static GenreViewModel ToViewModel(this Genre genre)
 	{
-		return new GenreViewModel()
+		return new GenreViewModel
 		{
 			Name = genre.Name,
 			Games = genre.Games

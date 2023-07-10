@@ -1,9 +1,9 @@
-﻿using Domain.Entities;
+﻿using Application.Response;
 
 namespace Application.Interfaces;
 
 public interface IGameService : IService<IGameViewModel>
 {
-	Task<bool> DeleteById (Guid id, CancellationToken cancellationToken);
-	Task<bool> DeleteByName (string name, CancellationToken cancellationToken);
+	public Task<IResponse<bool>> DeleteById(Guid id);
+	public Task<IResponse<bool>> DeleteByName(string name);
 }

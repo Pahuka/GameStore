@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFData.Repository;
 
@@ -12,33 +13,41 @@ public class GenreRepository : IGenreRepository
 		_appDbContext = appDbContext;
 	}
 
-	public async Task<bool> Create(Genre entity, CancellationToken cancellationToken)
+	public async Task<bool> Create(Genre entity)
 	{
-		throw new NotImplementedException();
+		await _appDbContext.Genres.AddAsync(entity);
+		return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
 	}
 
-	public async Task<Genre> Update(Genre entity, CancellationToken cancellationToken)
+	public async Task<Genre> Update(Genre entity)
 	{
-		throw new NotImplementedException();
+		_appDbContext.Genres.Update(entity);
+		await _appDbContext.SaveChangesAsync();
+
+		return entity;
 	}
 
-	public async Task<bool> Delete(Genre entity, CancellationToken cancellationToken)
+	public async Task<bool> Delete(Genre entity)
 	{
-		throw new NotImplementedException();
+		_appDbContext.Genres.Remove(entity);
+
+		return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
 	}
 
 	public async Task<IQueryable<Genre>> GetAll()
 	{
-		throw new NotImplementedException();
+		return _appDbContext.Genres
+			.Include(x => x.Games)
+			.AsQueryable();
 	}
 
-	public async Task<Genre> GetById(int id)
+	public async Task<Genre> GetById(Guid id)
 	{
-		throw new NotImplementedException();
+		return await _appDbContext.Genres.FindAsync(id);
 	}
 
 	public async Task<Genre> GetByName(string name)
 	{
-		throw new NotImplementedException();
+		return await _appDbContext.Genres.FindAsync(name);
 	}
 }

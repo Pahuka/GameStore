@@ -1,7 +1,9 @@
-﻿namespace Application.Interfaces;
+﻿using Application.Response;
+
+namespace Application.Interfaces;
 
 public interface IGenreService : IService<IGenreViewModel>
 {
-	Task<bool> DeleteById(Guid id, CancellationToken cancellationToken);
-	Task<bool> DeleteByName(string name, CancellationToken cancellationToken);
+	Task<IResponse<bool>> DeleteById(Guid id);
+	Task<IResponse<bool>> DeleteByName(string name);
 }

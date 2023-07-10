@@ -4,7 +4,7 @@ namespace Application.Interfaces;
 
 public interface IService<TViewModel>
 {
-	Task<IResponse<IQueryable<TViewModel>>> GetAll();
-	Task<IResponse<bool>> Create(TViewModel viewModel, CancellationToken cancellationToken);
-	Task<IResponse<TViewModel>> Update(TViewModel viewModel, CancellationToken cancellationToken);
+	public Task<IResponse<IQueryable<TViewModel>>> GetAll();
+	public Task<IResponse<bool>> Create(TViewModel viewModel);
+	public Task<IResponse<TViewModel>> Update(TViewModel viewModel);
 }

@@ -2,17 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EFData.EntityTypeConfigurations
+namespace EFData.EntityTypeConfigurations;
+
+public class GameConfiguration : IEntityTypeConfiguration<Game>
 {
-	public class GameConfiguration : IEntityTypeConfiguration<Game>
+	public void Configure(EntityTypeBuilder<Game> builder)
 	{
-		public void Configure(EntityTypeBuilder<Game> builder)
-		{
-			builder
-				.HasKey(x => x.Id);
-			builder
-				.HasMany(x => x.Genres)
-				.WithMany(x=> x.Games);
-		}
+		builder
+			.HasKey(x => x.Id);
+		builder
+			.HasMany(x => x.Genres)
+			.WithMany(x => x.Games);
 	}
 }

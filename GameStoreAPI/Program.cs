@@ -1,7 +1,6 @@
 using Application.Interfaces;
 using EFData;
 using EFData.Repository;
-using GameStoreServices;
 using GameStoreServices.Implementations;
 using GameStoreServices.ViewModels;
 using Microsoft.EntityFrameworkCore;

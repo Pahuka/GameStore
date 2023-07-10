@@ -1,10 +1,9 @@
 ﻿using Application.Interfaces;
 
-namespace GameStoreServices.ViewModels
+namespace GameStoreServices.ViewModels;
+
+public class GenreViewModel : IGenreViewModel
 {
-	public class GenreViewModel : IGenreViewModel
-	{
-		public string Name { get; set; }
-		public IList<GameViewModel> Games { get; set; } = new List<GameViewModel>();
-	}
+	public string Name { get; set; }
+	public IList<GameViewModel> Games { get; set; } = new List<GameViewModel>();
 }

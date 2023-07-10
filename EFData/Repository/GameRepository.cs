@@ -6,41 +6,49 @@ namespace EFData.Repository;
 
 public class GameRepository : IGameRepository
 {
-	private readonly AppDbContext _dbContext;
+	private readonly AppDbContext _appDbContext;
 
-	public GameRepository(AppDbContext dbContext)
+	public GameRepository(AppDbContext appAppDbContext)
 	{
-		_dbContext = dbContext;
+		_appDbContext = appAppDbContext;
 	}
 
-	public async Task<bool> Create(Game entity, CancellationToken cancellationToken)
+	public async Task<bool> Create(Game entity)
 	{
-		await _dbContext.AddAsync(entity, cancellationToken);
-		return _dbContext.SaveChangesAsync(cancellationToken).IsCompletedSuccessfully;
+		await _appDbContext.Games.AddAsync(entity);
+
+		return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
 	}
 
-	public async Task<Game> Update(Game entity, CancellationToken cancellationToken)
+	public async Task<Game> Update(Game entity)
 	{
-		throw new NotImplementedException();
+		_appDbContext.Games.Update(entity);
+		await _appDbContext.SaveChangesAsync();
+
+		return entity;
 	}
 
-	public async Task<bool> Delete(Game entity, CancellationToken cancellationToken)
+	public async Task<bool> Delete(Game entity)
 	{
-		throw new NotImplementedException();
+		_appDbContext.Games.Remove(entity);
+
+		return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
 	}
 
 	public async Task<IQueryable<Game>> GetAll()
 	{
-		return _dbContext.Games.AsQueryable();
+		return _appDbContext.Games
+			.Include(x => x.Genres)
+			.AsQueryable();
 	}
 
-	public async Task<Game> GetById(int id)
+	public async Task<Game> GetById(Guid id)
 	{
-		throw new NotImplementedException();
+		return await _appDbContext.Games.FindAsync(id);
 	}
 
 	public async Task<Game> GetByName(string name)
 	{
-		throw new NotImplementedException();
+		return await _appDbContext.Games.FindAsync(name);
 	}
 }
