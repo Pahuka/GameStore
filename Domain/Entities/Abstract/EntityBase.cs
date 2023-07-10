@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities.Abstract;
 
-public class EntityBase : IEntityBase
+public abstract class EntityBase : IEntityBase
 {
 	public EntityBase()
 	{
