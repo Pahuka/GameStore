@@ -15,12 +15,11 @@ public class GameRepository : IGameRepository
 
 	public async Task<bool> Create(Game entity)
 	{
-		var genres = new List<Genre>(entity.Genres);
 		var result = new List<Genre>();
 
 		try
 		{
-			foreach (var genre in genres)
+			foreach (var genre in entity.Genres)
 			{
 				var currentGenre = await _appDbContext.Genres
 					.Include(x => x.Games)
@@ -29,14 +28,12 @@ public class GameRepository : IGameRepository
 				if (currentGenre != null)
 				{
 					currentGenre.Games.Add(entity);
-					//_appDbContext.Genres.Update(currentGenre);
 					result.Add(currentGenre);
 				}
 				else
 				{
 					genre.Games.Add(entity);
 					result.Add(genre);
-					//await _appDbContext.Genres.AddAsync(genre);
 				}
 			}
 
@@ -49,7 +46,6 @@ public class GameRepository : IGameRepository
 			Console.WriteLine(e);
 			throw;
 		}
-		
 	}
 
 	public async Task<Game> Update(Game entity)

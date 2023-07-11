@@ -134,7 +134,7 @@ public class GameService : IGameService
 		}
 	}
 
-	public async Task<IResponse<IEnumerable<GameViewModel>>> GetByGenres(string[] genres) //TODO: Дублирует игру в поиске по нескольким жанрам если содержит 2 разных
+	public async Task<IResponse<IEnumerable<GameViewModel>>> GetByGenres(string[] genres)
 	{
 		if (genres == null)
 			throw new Exception(); //TODO: исправить это место
@@ -156,7 +156,7 @@ public class GameService : IGameService
 				gamesList.AddRange(sortedGames);
 			}
 
-			response.Data = gamesList;
+			response.Data = gamesList.DistinctBy(x => x.Id);
 			response.StatusCode = StatusCode.OK;
 
 			return response;
