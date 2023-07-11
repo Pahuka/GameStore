@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,38 +15,48 @@ public class GameRepository : IGameRepository
 
 	public async Task<bool> Create(Game entity)
 	{
-		var genres = new List<Genre>();
+		var genres = new List<Genre>(entity.Genres);
+		var result = new List<Genre>();
 
-		foreach (var genre in entity.Genres)
+		try
 		{
-			var currentGenre = await _appDbContext.Genres
-				.Include(x=> x.Games)
-				.FirstOrDefaultAsync(x => x.Name == genre.Name);
+			foreach (var genre in genres)
+			{
+				var currentGenre = await _appDbContext.Genres
+					.Include(x => x.Games)
+					.FirstOrDefaultAsync(x => x.Name == genre.Name);
 
-			if (currentGenre != null)
-			{
-				currentGenre.Games.Add(entity);
-				genres.Add(currentGenre);
+				if (currentGenre != null)
+				{
+					currentGenre.Games.Add(entity);
+					//_appDbContext.Genres.Update(currentGenre);
+					result.Add(currentGenre);
+				}
+				else
+				{
+					genre.Games.Add(entity);
+					result.Add(genre);
+					//await _appDbContext.Genres.AddAsync(genre);
+				}
 			}
-			else
-			{
-				genre.Games.Add(entity);
-				genres.Add(genre);
-				await _appDbContext.Genres.AddAsync(genre);
-			}
+
+			entity.Genres = result;
+			await _appDbContext.Games.AddAsync(entity);
+			return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
 		}
-
-		entity.Genres = genres;
-		await _appDbContext.Games.AddAsync(entity);
-
-		return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			throw;
+		}
+		
 	}
 
 	public async Task<Game> Update(Game entity)
 	{
 		var genres = new List<Genre>();
 		var oldGame = await _appDbContext.Games
-			.Include(x=> x.Genres)
+			.Include(x => x.Genres)
 			.FirstOrDefaultAsync(x => x.Id == entity.Id);
 
 		if (oldGame == null)
@@ -60,6 +69,7 @@ public class GameRepository : IGameRepository
 			if (oldGenre == null)
 			{
 				var currentGenre = await _appDbContext.Genres
+					.Include(x => x.Games)
 					.FirstOrDefaultAsync(x => x.Name == genre.Name);
 
 				if (currentGenre != null)

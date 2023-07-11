@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Response;
-using Domain.Entities;
 using Domain.Enums;
 using GameStoreServices.Mappers;
 

@@ -24,7 +24,7 @@ public class GameController : ControllerBase
 		return CheckResponse(response);
 	}
 
-	[HttpPut]
+	[HttpPut("update")]
 	public async Task<ActionResult<GameViewModel>> Update([FromBody] GameViewModel gameViewModel)
 	{
 		var response = await _gameService.Update(gameViewModel);
@@ -32,7 +32,7 @@ public class GameController : ControllerBase
 		return CheckResponse(response).Result;
 	}
 
-	[HttpDelete("{id}")]
+	[HttpDelete("delete/{id}")]
 	public async Task<ActionResult<bool>> Delete(Guid id)
 	{
 		var response = await _gameService.DeleteById(id);
@@ -40,7 +40,7 @@ public class GameController : ControllerBase
 		return CheckResponse(response);
 	}
 
-	[HttpGet]
+	[HttpGet("getAll")]
 	public async Task<ActionResult<GameViewModel>> GetAll()
 	{
 		var response = await _gameService.GetAll();
@@ -56,14 +56,11 @@ public class GameController : ControllerBase
 		return CheckResponse(response).Result;
 	}
 
-	//[HttpGet("{jenre}")]
-	//public async Task<ActionResult<GameViewModel>> GetByGenre(string jenre)
-	//{
-	//	var games = await _gameService.GetAll();
-	//	games.Data.Where(x => x.Genres.Where(x => x.Name == jenre) == true);
-
-	//	return CheckResponse(response).Result;
-	//}
+	[HttpGet("jenre")]
+	public async Task<ActionResult<GameViewModel>> GetByGenre([FromBody] string[] jenre)
+	{
+		return CheckResponse(await _gameService.GetByGenres(jenre)).Result;
+	}
 
 	private ActionResult<T> CheckResponse<T>(IResponse<T> response)
 	{

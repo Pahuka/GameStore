@@ -119,7 +119,44 @@ public class GameService : IGameService
 				return response;
 			}
 
-			response.Data = games.Select(x=> x.ToViewModel()).ToList();
+			response.Data = games.Select(x => x.ToViewModel()).ToList();
+			response.StatusCode = StatusCode.OK;
+
+			return response;
+		}
+		catch (Exception e)
+		{
+			response = new Responce<IEnumerable<GameViewModel>>();
+			response.StatusCode = StatusCode.InternalServerError;
+			response.Description = e.Message;
+
+			return response;
+		}
+	}
+
+	public async Task<IResponse<IEnumerable<GameViewModel>>> GetByGenres(string[] genres) //TODO: Дублирует игру в поиске по нескольким жанрам если содержит 2 разных
+	{
+		if (genres == null)
+			throw new Exception(); //TODO: исправить это место
+
+		var response = new Responce<IEnumerable<GameViewModel>>();
+
+		try
+		{
+			var games = await _gameRepository.GetAll();
+			var gamesList = new List<GameViewModel>();
+
+			foreach (var genre in genres)
+			{
+				var sortedGames = games
+					.Where(x => x.Genres.Any(x => x.Name == genre))
+					.Select(x => x.ToViewModel())
+					.ToList();
+
+				gamesList.AddRange(sortedGames);
+			}
+
+			response.Data = gamesList;
 			response.StatusCode = StatusCode.OK;
 
 			return response;

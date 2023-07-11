@@ -9,11 +9,11 @@ public static class GameMapper
 	{
 		return new Game
 		{
-			Id = gameViewModel.Id,
+			Id = gameViewModel.Id != Guid.Empty ? gameViewModel.Id : Guid.NewGuid(),
 			Name = gameViewModel.Name,
 			DevStudio = gameViewModel.DevStudio,
 			Genres = gameViewModel.Genres
-				.Select(x => new Genre(){Name = x.Name})
+				.Select(x => new Genre { Name = x.Name })
 				.ToList()
 		};
 	}
@@ -26,7 +26,7 @@ public static class GameMapper
 			Name = game.Name,
 			DevStudio = game.DevStudio,
 			Genres = game.Genres
-				.Select(x => new GenreViewModel() { Name = x.Name })
+				.Select(x => new GenreViewModel { Name = x.Name })
 				.ToList()
 		};
 	}
