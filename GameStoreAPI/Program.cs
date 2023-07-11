@@ -1,8 +1,8 @@
+using Application.Implementations;
 using Application.Interfaces;
 using EFData;
 using EFData.Repository;
 using GameStoreServices.Implementations;
-using GameStoreServices.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

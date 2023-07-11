@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230710191005_init")]
+    [Migration("20230711091824_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -56,6 +56,9 @@ namespace EFData.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Genres");
                 });

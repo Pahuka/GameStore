@@ -2,4 +2,5 @@
 
 public interface IGenreViewModel
 {
+	public string Name { get; set; }
 }

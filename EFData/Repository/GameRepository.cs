@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using System.Security.Cryptography.X509Certificates;
+using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,28 @@ public class GameRepository : IGameRepository
 
 	public async Task<bool> Create(Game entity)
 	{
+		var genres = new List<Genre>();
+
+		foreach (var genre in entity.Genres)
+		{
+			var currentGenre = await _appDbContext.Genres
+				.Include(x=> x.Games)
+				.FirstOrDefaultAsync(x => x.Name == genre.Name);
+
+			if (currentGenre != null)
+			{
+				currentGenre.Games.Add(entity);
+				genres.Add(currentGenre);
+			}
+			else
+			{
+				genre.Games.Add(entity);
+				genres.Add(genre);
+				await _appDbContext.Genres.AddAsync(genre);
+			}
+		}
+
+		entity.Genres = genres;
 		await _appDbContext.Games.AddAsync(entity);
 
 		return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
@@ -22,7 +45,43 @@ public class GameRepository : IGameRepository
 
 	public async Task<Game> Update(Game entity)
 	{
-		_appDbContext.Games.Update(entity);
+		var genres = new List<Genre>();
+		var oldGame = await _appDbContext.Games
+			.Include(x=> x.Genres)
+			.FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+		if (oldGame == null)
+			throw new Exception(); //TODO: Сделать кастомный эксепшн
+
+		foreach (var genre in entity.Genres)
+		{
+			var oldGenre = oldGame.Genres.FirstOrDefault(x => x.Name == genre.Name);
+
+			if (oldGenre == null)
+			{
+				var currentGenre = await _appDbContext.Genres
+					.FirstOrDefaultAsync(x => x.Name == genre.Name);
+
+				if (currentGenre != null)
+				{
+					currentGenre.Games.Add(oldGame);
+					genres.Add(currentGenre);
+				}
+				else
+				{
+					genre.Games.Add(oldGame);
+					genres.Add(genre);
+					await _appDbContext.Genres.AddAsync(genre);
+				}
+
+				continue;
+			}
+
+			genres.Add(oldGenre);
+		}
+
+		oldGame.Genres = genres;
+		_appDbContext.Games.Update(oldGame);
 		await _appDbContext.SaveChangesAsync();
 
 		return entity;
@@ -45,12 +104,14 @@ public class GameRepository : IGameRepository
 	public async Task<Game> GetById(Guid id)
 	{
 		return await _appDbContext.Games
+			.Include(x => x.Genres)
 			.FirstOrDefaultAsync(x => x.Id == id);
 	}
 
-	public async Task<Game> GetByName(string name)
+	public async Task<IQueryable<Game>> GetByName(string name)
 	{
-		return await _appDbContext.Games
-			.FirstOrDefaultAsync(x => x.Name == name);
+		return _appDbContext.Games
+			.Include(x => x.Genres)
+			.Where(x => x.Name == name);
 	}
 }

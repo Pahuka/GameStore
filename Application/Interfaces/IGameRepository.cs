@@ -5,5 +5,5 @@ namespace Application.Interfaces;
 public interface IGameRepository : IRepository<Game>
 {
 	public Task<Game> GetById(Guid id);
-	public Task<Game> GetByName(string name);
+	public Task<IQueryable<Game>> GetByName(string name);
 }

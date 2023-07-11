@@ -1,6 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.Implementations;
+using Application.Interfaces;
 using Application.Response;
-using GameStoreServices.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStoreAPI.Controllers;
@@ -21,7 +21,7 @@ public class GameController : ControllerBase
 	{
 		var response = await _gameService.Create(gameViewModel);
 
-		return Ok();
+		return CheckResponse(response);
 	}
 
 	[HttpPut]
@@ -32,10 +32,10 @@ public class GameController : ControllerBase
 		return CheckResponse(response).Result;
 	}
 
-	[HttpDelete("{name}")]
-	public async Task<ActionResult<bool>> Delete(string name)
+	[HttpDelete("{id}")]
+	public async Task<ActionResult<bool>> Delete(Guid id)
 	{
-		var response = await _gameService.DeleteByName(name);
+		var response = await _gameService.DeleteById(id);
 
 		return CheckResponse(response);
 	}
@@ -55,6 +55,15 @@ public class GameController : ControllerBase
 
 		return CheckResponse(response).Result;
 	}
+
+	//[HttpGet("{jenre}")]
+	//public async Task<ActionResult<GameViewModel>> GetByGenre(string jenre)
+	//{
+	//	var games = await _gameService.GetAll();
+	//	games.Data.Where(x => x.Genres.Where(x => x.Name == jenre) == true);
+
+	//	return CheckResponse(response).Result;
+	//}
 
 	private ActionResult<T> CheckResponse<T>(IResponse<T> response)
 	{

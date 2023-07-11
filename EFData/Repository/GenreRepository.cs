@@ -37,7 +37,7 @@ public class GenreRepository : IGenreRepository
 	public async Task<IQueryable<Genre>> GetAll()
 	{
 		return _appDbContext.Genres
-			.Include(x => x.Games)
+			//.Include(x => x.Games)
 			.AsQueryable();
 	}
 

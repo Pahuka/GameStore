@@ -11,6 +11,9 @@ public class GenreConfiguration : IEntityTypeConfiguration<Genre>
 		builder
 			.HasKey(x => x.Id);
 		builder
+			.HasIndex(x => x.Name)
+			.IsUnique();
+		builder
 			.HasMany(x => x.Games)
 			.WithMany(x => x.Genres);
 	}

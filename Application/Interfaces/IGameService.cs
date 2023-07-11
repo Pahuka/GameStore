@@ -1,10 +1,10 @@
-﻿using Application.Response;
+﻿using Application.Implementations;
+using Application.Response;
 
 namespace Application.Interfaces;
 
-public interface IGameService : IService<IGameViewModel>
+public interface IGameService : IService<GameViewModel>
 {
 	public Task<IResponse<bool>> DeleteById(Guid id);
-	public Task<IResponse<bool>> DeleteByName(string name);
-	public Task<IResponse<IGameViewModel>> GetByName(string name);
+	public Task<IResponse<IEnumerable<GameViewModel>>> GetByName(string name);
 }

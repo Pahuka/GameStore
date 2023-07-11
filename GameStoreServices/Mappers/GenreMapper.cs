@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-using GameStoreServices.ViewModels;
 
 namespace GameStoreServices.Mappers;
 
@@ -9,10 +8,7 @@ public static class GenreMapper
 	{
 		return new Genre
 		{
-			Name = genre.Name,
-			Games = genre.Games
-				.Select(x => x.ToEntity())
-				.ToList()
+			Name = genre.Name
 		};
 	}
 
@@ -20,10 +16,7 @@ public static class GenreMapper
 	{
 		return new GenreViewModel
 		{
-			Name = genre.Name,
-			Games = genre.Games
-				.Select(x => x.ToViewModel())
-				.ToList()
+			Name = genre.Name
 		};
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 
-namespace GameStoreServices.ViewModels;
+namespace Application.Implementations;
 
 public class GameViewModel : IGameViewModel
 {

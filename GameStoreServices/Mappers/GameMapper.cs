@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using GameStoreServices.ViewModels;
+﻿using Application.Implementations;
+using Domain.Entities;
 
 namespace GameStoreServices.Mappers;
 
@@ -9,10 +9,11 @@ public static class GameMapper
 	{
 		return new Game
 		{
+			Id = gameViewModel.Id,
 			Name = gameViewModel.Name,
 			DevStudio = gameViewModel.DevStudio,
 			Genres = gameViewModel.Genres
-				.Select(x => x.ToEntity())
+				.Select(x => new Genre(){Name = x.Name})
 				.ToList()
 		};
 	}
@@ -21,10 +22,11 @@ public static class GameMapper
 	{
 		return new GameViewModel
 		{
+			Id = game.Id,
 			Name = game.Name,
 			DevStudio = game.DevStudio,
 			Genres = game.Genres
-				.Select(x => x.ToViewModel())
+				.Select(x => new GenreViewModel() { Name = x.Name })
 				.ToList()
 		};
 	}

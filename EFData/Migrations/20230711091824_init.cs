@@ -66,6 +66,12 @@ namespace EFData.Migrations
                 name: "IX_GameGenre_GenresId",
                 table: "GameGenre",
                 column: "GenresId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Genres_Name",
+                table: "Genres",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />

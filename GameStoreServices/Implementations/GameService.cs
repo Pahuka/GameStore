@@ -1,8 +1,8 @@
-﻿using Application.Interfaces;
+﻿using Application.Implementations;
+using Application.Interfaces;
 using Application.Response;
 using Domain.Enums;
 using GameStoreServices.Mappers;
-using GameStoreServices.ViewModels;
 
 namespace GameStoreServices.Implementations;
 
@@ -15,9 +15,9 @@ public class GameService : IGameService
 		_gameRepository = gameRepository;
 	}
 
-	public async Task<IResponse<IQueryable<IGameViewModel>>> GetAll()
+	public async Task<IResponse<IQueryable<GameViewModel>>> GetAll()
 	{
-		var response = new Responce<IQueryable<IGameViewModel>>();
+		var response = new Responce<IQueryable<GameViewModel>>();
 
 		try
 		{
@@ -29,7 +29,7 @@ public class GameService : IGameService
 		}
 		catch (Exception e)
 		{
-			response = new Responce<IQueryable<IGameViewModel>>();
+			response = new Responce<IQueryable<GameViewModel>>();
 			response.StatusCode = StatusCode.InternalServerError;
 			response.Description = e.Message;
 
@@ -37,13 +37,13 @@ public class GameService : IGameService
 		}
 	}
 
-	public async Task<IResponse<bool>> Create(IGameViewModel viewModel)
+	public async Task<IResponse<bool>> Create(GameViewModel viewModel)
 	{
 		var response = new Responce<bool>();
 
 		try
 		{
-			response.Data = _gameRepository.Create((viewModel as GameViewModel).ToEntity()).IsCompletedSuccessfully;
+			response.Data = _gameRepository.Create(viewModel.ToEntity()).IsCompletedSuccessfully;
 			response.StatusCode = StatusCode.OK;
 
 			return response;
@@ -59,13 +59,13 @@ public class GameService : IGameService
 		}
 	}
 
-	public async Task<IResponse<IGameViewModel>> Update(IGameViewModel viewModel)
+	public async Task<IResponse<GameViewModel>> Update(GameViewModel viewModel)
 	{
-		var response = new Responce<IGameViewModel>();
+		var response = new Responce<GameViewModel>();
 
 		try
 		{
-			await _gameRepository.Update((viewModel as GameViewModel).ToEntity());
+			await _gameRepository.Update(viewModel.ToEntity());
 			response.Data = viewModel;
 			response.StatusCode = StatusCode.OK;
 
@@ -73,7 +73,7 @@ public class GameService : IGameService
 		}
 		catch (Exception e)
 		{
-			response = new Responce<IGameViewModel>();
+			response = new Responce<GameViewModel>();
 			response.StatusCode = StatusCode.InternalServerError;
 			response.Description = e.Message;
 
@@ -104,51 +104,29 @@ public class GameService : IGameService
 		}
 	}
 
-	public async Task<IResponse<bool>> DeleteByName(string name)
+	public async Task<IResponse<IEnumerable<GameViewModel>>> GetByName(string name)
 	{
-		var response = new Responce<bool>();
+		var response = new Responce<IEnumerable<GameViewModel>>();
 
 		try
 		{
-			var game = await _gameRepository.GetByName(name);
-			response.Data = await _gameRepository.Delete(game);
-			response.StatusCode = StatusCode.OK;
+			var games = await _gameRepository.GetByName(name);
 
-			return response;
-		}
-		catch (Exception e)
-		{
-			response = new Responce<bool>();
-			response.StatusCode = StatusCode.InternalServerError;
-			response.Description = e.Message;
-
-			return response;
-		}
-	}
-
-	public async Task<IResponse<IGameViewModel>> GetByName(string name)
-	{
-		var response = new Responce<IGameViewModel>();
-
-		try
-		{
-			var game = await _gameRepository.GetByName(name);
-
-			if (game == null)
+			if (games == null)
 			{
 				response.StatusCode = StatusCode.NotFound;
 
 				return response;
 			}
 
-			response.Data = game.ToViewModel();
+			response.Data = games.Select(x=> x.ToViewModel()).ToList();
 			response.StatusCode = StatusCode.OK;
 
 			return response;
 		}
 		catch (Exception e)
 		{
-			response = new Responce<IGameViewModel>();
+			response = new Responce<IEnumerable<GameViewModel>>();
 			response.StatusCode = StatusCode.InternalServerError;
 			response.Description = e.Message;
 
