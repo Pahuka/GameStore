@@ -13,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Response\" />
     <Folder Include="Implementations\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 
   <ItemGroup>

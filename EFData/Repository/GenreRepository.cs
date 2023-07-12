@@ -37,19 +37,21 @@ public class GenreRepository : IGenreRepository
 	public async Task<IQueryable<Genre>> GetAll()
 	{
 		return _appDbContext.Genres
-			//.Include(x => x.Games)
+			.Include(x => x.Games)
 			.AsQueryable();
 	}
 
 	public async Task<Genre> GetById(Guid id)
 	{
 		return await _appDbContext.Genres
+			.Include(x => x.Games)
 			.FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 	public async Task<Genre> GetByName(string name)
 	{
 		return await _appDbContext.Genres
+			.Include(x=> x.Games)	
 			.FirstOrDefaultAsync(x => x.Name == name);
 	}
 }

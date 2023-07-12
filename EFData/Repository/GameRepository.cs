@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,35 +18,27 @@ public class GameRepository : IGameRepository
 	{
 		var result = new List<Genre>();
 
-		try
+		foreach (var genre in entity.Genres)
 		{
-			foreach (var genre in entity.Genres)
+			var currentGenre = await _appDbContext.Genres
+				.Include(x => x.Games)
+				.FirstOrDefaultAsync(x => x.Name == genre.Name);
+
+			if (currentGenre != null)
 			{
-				var currentGenre = await _appDbContext.Genres
-					.Include(x => x.Games)
-					.FirstOrDefaultAsync(x => x.Name == genre.Name);
-
-				if (currentGenre != null)
-				{
-					currentGenre.Games.Add(entity);
-					result.Add(currentGenre);
-				}
-				else
-				{
-					genre.Games.Add(entity);
-					result.Add(genre);
-				}
+				currentGenre.Games.Add(entity);
+				result.Add(currentGenre);
 			}
+			else
+			{
+				genre.Games.Add(entity);
+				result.Add(genre);
+			}
+		}
 
-			entity.Genres = result;
-			await _appDbContext.Games.AddAsync(entity);
-			return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine(e);
-			throw;
-		}
+		entity.Genres = result;
+		await _appDbContext.Games.AddAsync(entity);
+		return _appDbContext.SaveChangesAsync().IsCompletedSuccessfully;
 	}
 
 	public async Task<Game> Update(Game entity)
@@ -56,7 +49,7 @@ public class GameRepository : IGameRepository
 			.FirstOrDefaultAsync(x => x.Id == entity.Id);
 
 		if (oldGame == null)
-			throw new Exception(); //TODO: Сделать кастомный эксепшн
+			throw new NotFoundException(nameof(Game), entity.Id);
 
 		foreach (var genre in entity.Genres)
 		{

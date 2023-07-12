@@ -1,6 +1,8 @@
-﻿using Application.Implementations;
+﻿using Application.Exceptions;
+using Application.Implementations;
 using Application.Interfaces;
 using Application.Response;
+using Domain.Entities;
 using Domain.Enums;
 using GameStoreServices.Mappers;
 
@@ -89,6 +91,9 @@ public class GameService : IGameService
 		{
 			var game = await _gameRepository.GetById(id);
 
+			if (game == null)
+				throw new NotFoundException(nameof(Game), id);
+
 			response.Data = await _gameRepository.Delete(game);
 			response.StatusCode = StatusCode.OK;
 
@@ -136,9 +141,6 @@ public class GameService : IGameService
 
 	public async Task<IResponse<IEnumerable<GameViewModel>>> GetByGenres(string[] genres)
 	{
-		if (genres == null)
-			throw new Exception(); //TODO: исправить это место
-
 		var response = new Responce<IEnumerable<GameViewModel>>();
 
 		try

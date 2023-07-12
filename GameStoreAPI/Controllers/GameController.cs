@@ -27,6 +27,9 @@ public class GameController : ControllerBase
 	[HttpPut("update")]
 	public async Task<ActionResult<GameViewModel>> Update([FromBody] GameViewModel gameViewModel)
 	{
+		if (gameViewModel.Id == Guid.Empty)
+			throw new ArgumentException("Bad game Id", gameViewModel.Id.ToString());
+
 		var response = await _gameService.Update(gameViewModel);
 
 		return CheckResponse(response).Result;
